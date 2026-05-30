@@ -66,6 +66,32 @@ python train.py --mimic_version 4 --mimic4_full --seed 42 --ddi_alpha 0.2
 
 ---
 
+## Data
+
+### Pre-processed dataset (recommended)
+
+All processed data files (~3.7 GB) are published as a Kaggle dataset — no PhysioNet access required to reproduce results:
+
+**[https://www.kaggle.com/datasets/baaa3333/mirror-data](https://www.kaggle.com/datasets/baaa3333/mirror-data)**
+
+Download and place the contents under `data/`:
+```
+data/
+├── processed/              # MIMIC-III cohort, vocab, DDI matrix, lab vectors, note embeddings
+├── processed_mimic4/       # MIMIC-IV standard cohort
+├── processed_mimic4_sota/  # MIMIC-IV SOTA-split cohort
+├── processed_mimic4_full/  # MIMIC-IV full cohort
+└── embeddings/             # PubMedBERT code embeddings (.pt)
+```
+
+The sweep notebooks in `notebooks/thesis_sweeps/` are pre-configured to load from Kaggle input paths when running on Kaggle — no path changes needed.
+
+### Reproduce from raw MIMIC (optional)
+
+Access to MIMIC-III and/or MIMIC-IV requires PhysioNet credentialing. After obtaining access, run the preprocessing scripts under `preprocess/`.
+
+---
+
 ## Requirements
 
 ```bash
