@@ -1,0 +1,167 @@
+Seed: 42, Device: cuda, Ablation: full
+
+=== Loading data (tag=final) ===
+  Records: 6350 patients, 131 drugs, 1958 diag, 1430 proc
+  Loading embeddings from data/embeddings/code_embeddings.pt ...
+
+=== Splitting data ===
+  Split protocol: hidr_vita_sequential (seed=n/a)
+  Train: 4233, Val: 1059, Test: 1058
+
+=== Building drug graph ===
+  Directed EHR weights: 13512 non-zero entries, 6755 asymmetric pairs
+  ATC coverage: 127/131 drugs (322 ATC-3 edges, 82 ATC-2 fallback edges, 4 true singletons with only self-loops)
+  Drug graph: 3555 edges (DDI=896, CoOccur=2206, SelfLoop=131, ATC=322)
+  Directed weights (co-occur): min=0.0429, max=0.9870, mean=0.4502
+
+=== Building model ===
+  [Run 27] ACLM ENABLED (default) — per-batch LR = base_lr/sqrt(avg_visit_len)
+  [Run 27] use_tripartite=False, use_dcma=False, fusion=film, hist=True, aclm=True
+  [!] MIRROR diagnostics ENABLED (CPU-GPU sync impact)
+  Set predictor.note_global_mean (norm=12.56)
+  visit_encoder: 1,191,681 trainable / 3,793,665 total
+  drug_gnn: 1,974,080 trainable / 1,974,080 total
+  predictor: 262,404 trainable / 262,406 total
+  model_total: 3,691,333 trainable / 6,293,319 total
+  [Loss] SoftJaccard weight=1.0
+  [Run 27 P7B] DDI monitoring-only (--ddi_alpha=0, default)
+  [Run 27 P7] Count regularizer OFF (--count_reg_weight=0, default); avg_true_count=18.96 (computed for reference)
+
+=== Training ===
+  Epoch   1/120 (10.3s) | Loss: 2.6645 (BCE:3.6211 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.2884  F1: 0.4407  PRAUC: 0.6238  DDI: 0.1089  Prec: 0.299  Rec: 0.911  Meds: 58.5/19.2  NHJ-New: 0.1275  NHJ-Drop: 0.1042
+    [*] New best val Jaccard: 0.2884 — saved
+  Epoch   2/120 (8.9s) | Loss: 1.2565 (BCE:1.0690 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.2754  F1: 0.4241  PRAUC: 0.6217  DDI: 0.0652  Prec: 0.780  Rec: 0.308  Meds: 7.3/19.2  NHJ-New: 0.0694  NHJ-Drop: 0.3936
+  Epoch   3/120 (9.2s) | Loss: 1.0957 (BCE:0.8002 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.3904  F1: 0.5560  PRAUC: 0.6246  DDI: 0.0916  Prec: 0.568  Rec: 0.579  Meds: 19.1/19.2  NHJ-New: 0.1477  NHJ-Drop: 0.3805
+    [*] New best val Jaccard: 0.3904 — saved
+  Epoch   4/120 (9.7s) | Loss: 1.0647 (BCE:0.7365 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.3447  F1: 0.5039  PRAUC: 0.7077  DDI: 0.0751  Prec: 0.357  Rec: 0.925  Meds: 49.8/19.2  NHJ-New: 0.1661  NHJ-Drop: 0.1103
+  Epoch   5/120 (9.6s) | Loss: 1.0483 (BCE:0.7371 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.3414  F1: 0.5002  PRAUC: 0.7055  DDI: 0.0974  Prec: 0.353  Rec: 0.927  Meds: 50.4/19.2  NHJ-New: 0.1621  NHJ-Drop: 0.1232
+  Epoch   6/120 (8.7s) | Loss: 1.0117 (BCE:0.6766 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.4543  F1: 0.6178  PRAUC: 0.7098  DDI: 0.1112  Prec: 0.645  Rec: 0.638  Meds: 19.0/19.2  NHJ-New: 0.1953  NHJ-Drop: 0.3660
+    [*] New best val Jaccard: 0.4543 — saved
+  Epoch   7/120 (8.9s) | Loss: 1.0154 (BCE:0.6822 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.4560  F1: 0.6178  PRAUC: 0.7290  DDI: 0.0775  Prec: 0.529  Rec: 0.799  Meds: 29.0/19.2  NHJ-New: 0.2261  NHJ-Drop: 0.2456
+    [*] New best val Jaccard: 0.4560 — saved
+  Epoch   8/120 (8.8s) | Loss: 1.0025 (BCE:0.6648 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.4622  F1: 0.6250  PRAUC: 0.7226  DDI: 0.1039  Prec: 0.600  Rec: 0.703  Meds: 22.4/19.2  NHJ-New: 0.2072  NHJ-Drop: 0.3360
+    [*] New best val Jaccard: 0.4622 — saved
+  Epoch   9/120 (8.9s) | Loss: 1.0080 (BCE:0.6755 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.4576  F1: 0.6190  PRAUC: 0.7306  DDI: 0.0797  Prec: 0.521  Rec: 0.813  Meds: 29.7/19.2  NHJ-New: 0.2353  NHJ-Drop: 0.2623
+  Epoch  10/120 (8.7s) | Loss: 0.9789 (BCE:0.6370 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.4121  F1: 0.5768  PRAUC: 0.7332  DDI: 0.0916  Prec: 0.777  Rec: 0.484  Meds: 11.6/19.2  NHJ-New: 0.1289  NHJ-Drop: 0.4357
+  Epoch  11/120 (9.6s) | Loss: 1.0163 (BCE:0.6906 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.3412  F1: 0.5000  PRAUC: 0.7217  DDI: 0.0935  Prec: 0.352  Rec: 0.934  Meds: 51.2/19.2  NHJ-New: 0.1652  NHJ-Drop: 0.0855
+  Epoch  12/120 (9.0s) | Loss: 0.9739 (BCE:0.6191 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.4481  F1: 0.6121  PRAUC: 0.7254  DDI: 0.0804  Prec: 0.710  Rec: 0.571  Meds: 15.1/19.2  NHJ-New: 0.1695  NHJ-Drop: 0.4056
+  Epoch  13/120 (9.0s) | Loss: 0.9635 (BCE:0.6197 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.4334  F1: 0.5976  PRAUC: 0.7373  DDI: 0.1009  Prec: 0.752  Rec: 0.526  Meds: 13.1/19.2  NHJ-New: 0.1448  NHJ-Drop: 0.4194
+  Epoch  14/120 (8.8s) | Loss: 0.9333 (BCE:0.5817 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.4652  F1: 0.6262  PRAUC: 0.7357  DDI: 0.0838  Prec: 0.545  Rec: 0.791  Meds: 27.9/19.2  NHJ-New: 0.2291  NHJ-Drop: 0.2527
+    [*] New best val Jaccard: 0.4652 — saved
+  Epoch  15/120 (8.9s) | Loss: 0.9548 (BCE:0.6032 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.4854  F1: 0.6463  PRAUC: 0.7414  DDI: 0.0885  Prec: 0.625  Rec: 0.714  Meds: 21.6/19.2  NHJ-New: 0.2171  NHJ-Drop: 0.3422
+    [*] New best val Jaccard: 0.4854 — saved
+  Epoch  16/120 (8.9s) | Loss: 0.9509 (BCE:0.6038 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.4728  F1: 0.6340  PRAUC: 0.7368  DDI: 0.0858  Prec: 0.583  Rec: 0.751  Meds: 24.9/19.2  NHJ-New: 0.2267  NHJ-Drop: 0.3090
+  Epoch  17/120 (8.6s) | Loss: 0.9442 (BCE:0.6035 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.4599  F1: 0.6233  PRAUC: 0.7440  DDI: 0.0924  Prec: 0.742  Rec: 0.567  Meds: 14.1/19.2  NHJ-New: 0.1536  NHJ-Drop: 0.4222
+  Epoch  18/120 (8.9s) | Loss: 0.9409 (BCE:0.5865 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.4662  F1: 0.6279  PRAUC: 0.7335  DDI: 0.0954  Prec: 0.548  Rec: 0.788  Meds: 27.3/19.2  NHJ-New: 0.2224  NHJ-Drop: 0.2821
+  Epoch  19/120 (9.0s) | Loss: 0.9389 (BCE:0.5960 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.4431  F1: 0.6049  PRAUC: 0.7425  DDI: 0.0740  Prec: 0.492  Rec: 0.847  Meds: 33.4/19.2  NHJ-New: 0.2278  NHJ-Drop: 0.2106
+  Epoch  20/120 (8.9s) | Loss: 0.9350 (BCE:0.5822 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.4595  F1: 0.6213  PRAUC: 0.7225  DDI: 0.0931  Prec: 0.578  Rec: 0.732  Meds: 24.7/19.2  NHJ-New: 0.2061  NHJ-Drop: 0.2968
+  Epoch  21/120 (9.1s) | Loss: 0.9240 (BCE:0.5702 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.4591  F1: 0.6202  PRAUC: 0.7357  DDI: 0.0911  Prec: 0.530  Rec: 0.807  Meds: 29.3/19.2  NHJ-New: 0.2296  NHJ-Drop: 0.2510
+  Epoch  22/120 (8.7s) | Loss: 0.9176 (BCE:0.5652 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.4788  F1: 0.6406  PRAUC: 0.7416  DDI: 0.1048  Prec: 0.677  Rec: 0.647  Meds: 18.0/19.2  NHJ-New: 0.1936  NHJ-Drop: 0.3893
+  Epoch  23/120 (9.0s) | Loss: 0.9128 (BCE:0.5627 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 5.00e-04
+    Val -> Jac: 0.4830  F1: 0.6446  PRAUC: 0.7493  DDI: 0.0968  Prec: 0.693  Rec: 0.638  Meds: 17.3/19.2  NHJ-New: 0.1856  NHJ-Drop: 0.3915
+  Epoch  24/120 (8.8s) | Loss: 0.9065 (BCE:0.5564 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 2.50e-04
+    Val -> Jac: 0.4611  F1: 0.6242  PRAUC: 0.7316  DDI: 0.1037  Prec: 0.693  Rec: 0.604  Meds: 16.4/19.2  NHJ-New: 0.1654  NHJ-Drop: 0.3884
+  Epoch  25/120 (8.9s) | Loss: 0.8909 (BCE:0.5397 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 2.50e-04
+    Val -> Jac: 0.4680  F1: 0.6287  PRAUC: 0.7409  DDI: 0.0788  Prec: 0.535  Rec: 0.821  Meds: 29.6/19.2  NHJ-New: 0.2289  NHJ-Drop: 0.2260
+  Epoch  26/120 (8.6s) | Loss: 0.8786 (BCE:0.5322 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 2.50e-04
+    Val -> Jac: 0.4906  F1: 0.6503  PRAUC: 0.7499  DDI: 0.0784  Prec: 0.609  Rec: 0.746  Meds: 23.4/19.2  NHJ-New: 0.2221  NHJ-Drop: 0.3034
+    [*] New best val Jaccard: 0.4906 — saved
+  Epoch  27/120 (8.8s) | Loss: 0.8729 (BCE:0.5270 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 2.50e-04
+    Val -> Jac: 0.4889  F1: 0.6492  PRAUC: 0.7477  DDI: 0.0859  Prec: 0.639  Rec: 0.712  Meds: 21.7/19.2  NHJ-New: 0.2084  NHJ-Drop: 0.3320
+  Epoch  28/120 (8.8s) | Loss: 0.8696 (BCE:0.5255 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 2.50e-04
+    Val -> Jac: 0.4911  F1: 0.6509  PRAUC: 0.7443  DDI: 0.0910  Prec: 0.635  Rec: 0.712  Meds: 21.5/19.2  NHJ-New: 0.2071  NHJ-Drop: 0.3310
+    [*] New best val Jaccard: 0.4911 — saved
+  Epoch  29/120 (8.9s) | Loss: 0.8649 (BCE:0.5221 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 2.50e-04
+    Val -> Jac: 0.4528  F1: 0.6137  PRAUC: 0.7456  DDI: 0.0685  Prec: 0.502  Rec: 0.850  Meds: 32.9/19.2  NHJ-New: 0.2245  NHJ-Drop: 0.1795
+  Epoch  30/120 (8.8s) | Loss: 0.8603 (BCE:0.5179 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 2.50e-04
+    Val -> Jac: 0.4913  F1: 0.6507  PRAUC: 0.7386  DDI: 0.0819  Prec: 0.599  Rec: 0.761  Meds: 24.3/19.2  NHJ-New: 0.2241  NHJ-Drop: 0.2859
+    [*] New best val Jaccard: 0.4913 — saved
+  Epoch  31/120 (8.9s) | Loss: 0.8582 (BCE:0.5175 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 2.50e-04
+    Val -> Jac: 0.4862  F1: 0.6460  PRAUC: 0.7471  DDI: 0.0813  Prec: 0.576  Rec: 0.785  Meds: 26.0/19.2  NHJ-New: 0.2310  NHJ-Drop: 0.2621
+  Epoch  32/120 (8.6s) | Loss: 0.8538 (BCE:0.5134 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 2.50e-04
+    Val -> Jac: 0.4894  F1: 0.6494  PRAUC: 0.7454  DDI: 0.0921  Prec: 0.605  Rec: 0.750  Meds: 23.7/19.2  NHJ-New: 0.2225  NHJ-Drop: 0.3052
+  Epoch  33/120 (8.4s) | Loss: 0.8490 (BCE:0.5100 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 2.50e-04
+    Val -> Jac: 0.4854  F1: 0.6451  PRAUC: 0.7425  DDI: 0.0794  Prec: 0.584  Rec: 0.775  Meds: 25.7/19.2  NHJ-New: 0.2258  NHJ-Drop: 0.2772
+  Epoch  34/120 (8.4s) | Loss: 0.8440 (BCE:0.5067 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 2.50e-04
+    Val -> Jac: 0.4855  F1: 0.6453  PRAUC: 0.7433  DDI: 0.0890  Prec: 0.582  Rec: 0.774  Meds: 25.4/19.2  NHJ-New: 0.2294  NHJ-Drop: 0.2703
+  Epoch  35/120 (8.4s) | Loss: 0.8411 (BCE:0.5045 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 2.50e-04
+    Val -> Jac: 0.4883  F1: 0.6477  PRAUC: 0.7441  DDI: 0.0772  Prec: 0.588  Rec: 0.772  Meds: 25.2/19.2  NHJ-New: 0.2285  NHJ-Drop: 0.2739
+  Epoch  36/120 (8.6s) | Loss: 0.8383 (BCE:0.5044 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 2.50e-04
+    Val -> Jac: 0.4709  F1: 0.6316  PRAUC: 0.7365  DDI: 0.0778  Prec: 0.545  Rec: 0.806  Meds: 28.6/19.2  NHJ-New: 0.2277  NHJ-Drop: 0.2355
+  Epoch  37/120 (8.6s) | Loss: 0.8310 (BCE:0.4961 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 2.50e-04
+    Val -> Jac: 0.4758  F1: 0.6362  PRAUC: 0.7367  DDI: 0.0813  Prec: 0.567  Rec: 0.783  Meds: 26.7/19.2  NHJ-New: 0.2205  NHJ-Drop: 0.2541
+  Epoch  38/120 (8.5s) | Loss: 0.8288 (BCE:0.4962 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 2.50e-04
+    Val -> Jac: 0.4853  F1: 0.6457  PRAUC: 0.7371  DDI: 0.0746  Prec: 0.620  Rec: 0.725  Meds: 22.5/19.2  NHJ-New: 0.2125  NHJ-Drop: 0.3115
+  Epoch  39/120 (8.5s) | Loss: 0.8237 (BCE:0.4930 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 1.25e-04
+    Val -> Jac: 0.4830  F1: 0.6434  PRAUC: 0.7279  DDI: 0.0828  Prec: 0.607  Rec: 0.735  Meds: 23.2/19.2  NHJ-New: 0.2135  NHJ-Drop: 0.3068
+  Epoch  40/120 (8.7s) | Loss: 0.8109 (BCE:0.4820 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 1.25e-04
+    Val -> Jac: 0.4823  F1: 0.6423  PRAUC: 0.7350  DDI: 0.0847  Prec: 0.583  Rec: 0.770  Meds: 25.4/19.2  NHJ-New: 0.2240  NHJ-Drop: 0.2727
+  Epoch  41/120 (9.1s) | Loss: 0.8064 (BCE:0.4782 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 1.25e-04
+    Val -> Jac: 0.4855  F1: 0.6461  PRAUC: 0.7327  DDI: 0.0880  Prec: 0.618  Rec: 0.727  Meds: 22.6/19.2  NHJ-New: 0.2046  NHJ-Drop: 0.3148
+  Epoch  42/120 (8.8s) | Loss: 0.8045 (BCE:0.4773 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 1.25e-04
+    Val -> Jac: 0.4865  F1: 0.6467  PRAUC: 0.7381  DDI: 0.0856  Prec: 0.605  Rec: 0.745  Meds: 23.5/19.2  NHJ-New: 0.2186  NHJ-Drop: 0.2930
+  Epoch  43/120 (8.9s) | Loss: 0.7997 (BCE:0.4738 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 1.25e-04
+    Val -> Jac: 0.4821  F1: 0.6424  PRAUC: 0.7358  DDI: 0.0848  Prec: 0.585  Rec: 0.764  Meds: 24.9/19.2  NHJ-New: 0.2233  NHJ-Drop: 0.2714
+  Epoch  44/120 (8.9s) | Loss: 0.7935 (BCE:0.4675 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 1.25e-04
+    Val -> Jac: 0.4836  F1: 0.6441  PRAUC: 0.7296  DDI: 0.0826  Prec: 0.606  Rec: 0.741  Meds: 23.5/19.2  NHJ-New: 0.2141  NHJ-Drop: 0.3020
+  Epoch  45/120 (8.9s) | Loss: 0.7922 (BCE:0.4680 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 1.25e-04
+    Val -> Jac: 0.4841  F1: 0.6447  PRAUC: 0.7315  DDI: 0.0898  Prec: 0.620  Rec: 0.723  Meds: 22.3/19.2  NHJ-New: 0.2010  NHJ-Drop: 0.3166
+  Epoch  46/120 (8.7s) | Loss: 0.7878 (BCE:0.4650 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 1.25e-04
+    Val -> Jac: 0.4788  F1: 0.6389  PRAUC: 0.7311  DDI: 0.0774  Prec: 0.577  Rec: 0.772  Meds: 25.8/19.2  NHJ-New: 0.2223  NHJ-Drop: 0.2703
+  Epoch  47/120 (8.7s) | Loss: 0.7845 (BCE:0.4628 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 1.25e-04
+    Val -> Jac: 0.4839  F1: 0.6442  PRAUC: 0.7303  DDI: 0.0788  Prec: 0.605  Rec: 0.740  Meds: 23.4/19.2  NHJ-New: 0.2158  NHJ-Drop: 0.2946
+  Epoch  48/120 (8.5s) | Loss: 0.7840 (BCE:0.4637 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 1.00e-04
+    Val -> Jac: 0.4768  F1: 0.6378  PRAUC: 0.7202  DDI: 0.0890  Prec: 0.602  Rec: 0.731  Meds: 23.2/19.2  NHJ-New: 0.2018  NHJ-Drop: 0.2997
+  Epoch  49/120 (8.3s) | Loss: 0.7795 (BCE:0.4604 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 1.00e-04
+    Val -> Jac: 0.4812  F1: 0.6416  PRAUC: 0.7292  DDI: 0.0827  Prec: 0.602  Rec: 0.740  Meds: 23.6/19.2  NHJ-New: 0.2101  NHJ-Drop: 0.2939
+  Epoch  50/120 (8.2s) | Loss: 0.7725 (BCE:0.4550 Mrg:0.0000 DDI:0.000 Alg:0.0000 AlgW:0.100) | LR: 1.00e-04
+    Val -> Jac: 0.4780  F1: 0.6389  PRAUC: 0.7245  DDI: 0.0836  Prec: 0.595  Rec: 0.744  Meds: 24.0/19.2  NHJ-New: 0.2060  NHJ-Drop: 0.2968
+  Early stopping at epoch 50 (patience=20)
+
+=== Testing ===
+
+  Test Results (threshold=0.5):
+    Jaccard:       0.4962   <- primary metric
+    NHJ (New):     0.2391   <- non-historical reasoning
+    NHJ (Dropped): 0.2887
+    F1:            0.6550   (positive-class only; baselines use macro F1 ~+0.05)
+    PRAUC:         0.7412
+    DDI Rate:      0.0820   (target <= 0.06)
+    Precision:     0.6158
+    Recall:        0.7481
+    Avg Meds:      23.99 predicted / 19.90 true
+
+  Threshold sweep (Jaccard | Avg Meds predicted | DDI Rate):
+    t=0.40: Jac=0.4882  Meds=26.9  DDI=0.0785
+    t=0.45: Jac=0.4926  Meds=25.4  DDI=0.0803
+    t=0.50: Jac=0.4962  Meds=24.0  DDI=0.0820  <- canonical
+    t=0.55: Jac=0.4974  Meds=22.7  DDI=0.0840  <- PEAK Jac
+    t=0.60: Jac=0.4964  Meds=21.3  DDI=0.0858
+    t=0.65: Jac=0.4933  Meds=20.0  DDI=0.0880  <- COUNT-CAL
+    t=0.70: Jac=0.4886  Meds=18.6  DDI=0.0895
+    t=0.75: Jac=0.4818  Meds=17.2  DDI=0.0911
+  Count-calibrated threshold: t=0.65  Jac=0.4933  Meds=20.0  (true avg: 19.9)
+
+Results saved to experiment_reports/sweep_14a_temporal/gru_naked_seed42/result_seed42_full_mimic3.json
