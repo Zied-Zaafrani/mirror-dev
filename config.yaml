@@ -1,0 +1,153 @@
+# MIRROR — Champion Configuration
+# Full system: LLM embeddings + ClinicalBERT notes + lab values + copy mechanism
+#
+# This config encodes the champion design decisions locked across Sweeps 11a–15b
+# (660 total runs, 5 seeds each). Every hyperparameter below is empirically
+# validated on MIMIC-III against SafeDrug SOTA (Jaccard 0.5021).
+#
+# Champion Jaccard estimate: ~0.5687 (additive, +0.0666 vs SafeDrug)
+#
+# Locked design decisions (do not change for the official thesis run):
+#   [11a] Modality stack:       notes + labs + copy  (full system)
+#   [11b] N_labs:               200  (400d input = 200 z-scores + 200 flags)
+#   [12a] note_proj_dim:        128
+#   [12b] fusion_strategy:      film
+#   [13a] aggregator:           last  |  ar_max_seq_len: 20
+#   [14a] encoder_type:         imdr_infused
+#   [14b] graph_layer_type:     gcn
+#   [14c] predictor_type:       heidr
+#   [15a] loss:                 L4_jac_heavy (bce=0.3, jac=1.5, margin=0.05)
+#   [15b] graph_encoder_type:   drug_gnn
+#
+# To run the official 5-seed sweep:
+#   for seed in 42 123 456 789 1024; do python train.py --seed $seed; done
+
+# ============================================================
+# Paths
+# ============================================================
+paths:
+  mimic3_dir: "DATASETS/mimic-iii-clinical-database-1.4"
+  external_dir: "data/external"
+  processed_dir: "data/processed"
+  embeddings_dir: "data/embeddings"
+  results_dir: "results"
+
+# ============================================================
+# Preprocessing
+# ============================================================
+preprocessing:
+  mimic3_mode: "canonical"       # Carmen/SafeDrug-comparable filtering
+
+  # Drug filtering
+  top_k_atc3: 300
+  smiles_file: "idx2SMILES.pkl"  # 131-drug Carmen variant
+  top_k_diagnoses: 2000
+  min_visits: 2
+
+  # Lab features: 200 labs × (z-score + presence flag) = 400d  [LOCKED: Sweep 11b]
+  lab_dim: 400                   # = 2 × N_labs (200 labs)
+  outlier_clipping: true
+  compute_trends: false
+
+  # Note encoding
+  note_method: "clinicalbert_chunk_pool"
+  chunk_size: 512
+  chunk_overlap: 128
+  min_chunk_tokens: 32
+  remove_med_section: true       # Remove discharge med section (prevents leakage)
+
+  # Data split
+  split_ratio: [4, 1, 1]
+  seed: 42
+
+# ============================================================
+# LLM Embedding Generation (offline, one-time)
+# ============================================================
+embeddings:
+  pubmedbert_model: "microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract"
+  embed_dim: 768
+  clinicalbert_model: "emilyalsentzer/Bio_ClinicalBERT"
+
+# ============================================================
+# Model Architecture
+# ============================================================
+model:
+  hidden_dim: 128                # Locked: Sweep 17 Gap D (+0.0013 Jac vs 256, 3× fewer params)
+  embed_dim: 768
+  encoder_layers: 2
+
+  # Multimodal fusion  [LOCKED: Sweep 12a + 12b]
+  note_proj_dim: 64              # Locked: hidden_dim // 2 = 64
+  lab_proj_dim: null             # Auto: hidden_dim // 4 = 64
+  fusion_strategy: "film"        # FiLM modulation — champion
+
+  # Drug knowledge graph  [LOCKED: Sweep 14b + 15b]
+  graph_encoder_type: "drug_gnn" # Champion graph encoder
+  graph_layer_type: "gcn"        # Champion graph layer (beats HGT)
+  hgt_layers: 2                  # Number of GNN message-passing layers
+  hgt_heads: 4
+  morgan_bits: 256
+  morgan_radius: 2
+  num_edge_types: 4              # DDI + co-occurrence + self-loops + ATC
+
+  # Generate-and-copy  [LOCKED: Sweep 11a + 13a]
+  copy_mechanism: true
+  per_visit_copy: true
+  max_visits: 30
+  ar_max_seq_len: 20             # Locked: optimal autoregressive sequence length
+
+  # Temporal encoder  [LOCKED: Sweep 14a]
+  encoder_type: "imdr_infused"   # IMDR early drug-knowledge infusion — champion
+
+  # Scorer / Decoder  [LOCKED: Sweep 14c]
+  predictor_type: "heidr"        # Drug self-attn + cross-attn + copy — champion
+
+  # Lab encoder  [LOCKED: Sweep 11b]
+  lab_encoder_type: "flat"       # Flat MLP over 400d lab vector
+  aggregator: "last"             # Last non-padded visit state  [LOCKED: Sweep 13a]
+
+  # Modality flags  [LOCKED: Sweep 11a — full system]
+  note_method: "clinicalbert_chunk_pool"  # Enable notes
+  use_labs: true                 # Enable labs
+
+  # Embedding fine-tuning
+  finetune_embeddings: false
+
+  # Within-patient historical attention  [LOCKED: Sweep 11a]
+  use_historical_attention: true
+  att_tau: 20.0
+  gumbel_tau: 0.6
+
+  # Regularization
+  dropout: 0.3
+  gradient_clip: 1.0
+
+# ============================================================
+# Training
+# ============================================================
+training:
+  epochs: 120
+  batch_size: 64
+  learning_rate: 5.0e-4
+  lr_fallback: 1.0e-4
+  warmup_epochs: 10
+  weight_decay: 1.0e-5
+
+  # Champion loss: L4_jac_heavy  [LOCKED: Sweep 15a]
+  bce_weight: 0.3
+  soft_jaccard_weight: 1.5
+  margin_weight: 0.05
+  pos_weight_cap: 5.0            # Rare-drug BCE boost cap
+
+  # DDI annealing
+  target_ddi: 0.06
+  kp: 0.10
+
+  # Early stopping
+  patience: 20
+  monitor: "val_jaccard"
+
+  # Evaluation
+  threshold: 0.5
+  top_k: null
+  seeds: [42, 123, 456, 789, 1024]
