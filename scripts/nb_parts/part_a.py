@@ -1,5 +1,5 @@
 """Part A: env setup + data exploration cells."""
-GROQ_KEY = "YOUR_GROQ_API_KEY_HERE"
+GROQ_KEY = "YOUR_GROQ_API_KEY_HERE"  # set via env: export GROQ_API_KEY=gsk_...
 
 def cc(src): return {"cell_type":"code","execution_count":None,"metadata":{},"outputs":[],"source":[src]}
 def md(src): return {"cell_type":"markdown","metadata":{},"source":[src]}

@@ -1,8 +1,8 @@
 """Part C: Extended Metrics (Sec 5), Explainability (Sec 6), SOTA Tables (Sec 7)."""
 import json, pathlib
 
-GROQ_KEY_1 = "YOUR_GROQ_API_KEY_HERE"
-GROQ_KEY_2 = "YOUR_GROQ_API_KEY_2_HERE"
+GROQ_KEY_1 = "YOUR_GROQ_API_KEY_1_HERE"  # set via env: export GROQ_API_KEY=gsk_...
+GROQ_KEY_2 = "YOUR_GROQ_API_KEY_2_HERE"  # set via env: export GROQ_API_KEY_2=gsk_...
 
 def cc(src): return {"cell_type":"code","execution_count":None,"metadata":{},"outputs":[],"source":[src]}
 def md(src): return {"cell_type":"markdown","metadata":{},"source":[src]}
